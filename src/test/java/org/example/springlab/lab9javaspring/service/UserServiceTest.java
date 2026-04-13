@@ -8,9 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Repository;
-
-import java.util.Objects;
 
 import static org.mockito.Mockito.*;
 
@@ -19,27 +16,60 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
-    private UserRepository repository;
-    @Mock
-    private EmailService emailService;
+    private UserRepository userRepository;
+
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
-    private UserService service;
+    private UserService userService;
 
     @Test
-    void register_ShouldSaveUser() {
+    void register_test(){
         User user = new User();
-        user.setEmail("test@mail.ru");
-        user.setPassword("password");
+        user.setUserName("nikita_dev");
+        user.setPassword("1234");
 
-        when((passwordEncoder.encode(anyString()))).thenReturn("hashedPassword");
-        service.register(user);
+        when(passwordEncoder.encode(anyString())).thenReturn("hashedPass");
+        userService.register(user);
 
-        verify(repository, times(1)).save(any(User.class));
+        verify(userRepository, times(1)).save(any(User.class));
         verify(emailService, times(1)).sendSimpleEmail(eq("test@mail.ru"),anyString(),anyString());
     }
-
-
 }
+
+
+
+
+
+//
+//@ExtendWith(MockitoExtension.class)
+//class UserServiceTest {
+//    @Mock
+//    private UserRepository repository;
+//    @Mock
+//    private EmailService emailService;
+//    @Mock
+//    private BCryptPasswordEncoder passwordEncoder;
+//
+//    @InjectMocks
+//    private UserService service;
+//
+//    @Test
+//    void register_ShouldSaveUser() {
+//        User user = new User();
+//        user.setEmail("test@mail.ru");
+//        user.setPassword("password");
+//
+//        when((passwordEncoder.encode(anyString()))).thenReturn("hashedPassword");
+//        service.register(user);
+//
+//        verify(repository, times(1)).save(any(User.class));
+//        verify(emailService, times(1)).sendSimpleEmail(eq("test@mail.ru"),anyString(),anyString());
+//    }
+//
+//
+//}

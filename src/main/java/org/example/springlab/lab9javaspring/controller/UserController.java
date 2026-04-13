@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.springlab.lab9javaspring.dto.LoginRequest;
 import org.example.springlab.lab9javaspring.dto.VerificationRequest;
 import org.example.springlab.lab9javaspring.entity.User;
+import org.example.springlab.lab9javaspring.exception.GlobalExceptionHandler;
 import org.example.springlab.lab9javaspring.repository.UserRepository;
 import org.example.springlab.lab9javaspring.service.EmailService;
 import org.example.springlab.lab9javaspring.service.JwtService;
 import org.example.springlab.lab9javaspring.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +51,7 @@ public class UserController {
                         return ResponseEntity.status(401).body("Неверный пароль");
                     }
                 })
-                .orElse(ResponseEntity.status(404).body("Пользователь не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 
     @PostMapping("/verify")
