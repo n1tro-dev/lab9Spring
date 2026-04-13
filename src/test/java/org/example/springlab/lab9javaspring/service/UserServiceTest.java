@@ -1,6 +1,8 @@
 package org.example.springlab.lab9javaspring.service;
 
+import org.example.springlab.lab9javaspring.entity.AuditLog;
 import org.example.springlab.lab9javaspring.entity.User;
+import org.example.springlab.lab9javaspring.repository.AuditLogRepository;
 import org.example.springlab.lab9javaspring.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,60 +18,29 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private BCryptPasswordEncoder passwordEncoder;
-
+    private UserRepository repository;
     @Mock
     private EmailService emailService;
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
+    @Mock
+    private AuditLogRepository auditLogRepository;
 
     @InjectMocks
-    private UserService userService;
+    private UserService service;
 
     @Test
-    void register_test(){
+    void register_ShouldSaveUser() {
         User user = new User();
-        user.setUserName("nikita_dev");
-        user.setPassword("1234");
+        user.setEmail("test@mail.ru");
+        user.setPassword("password");
 
-        when(passwordEncoder.encode(anyString())).thenReturn("hashedPass");
-        userService.register(user);
+        when((passwordEncoder.encode(anyString()))).thenReturn("hashedPassword");
+        service.register(user);
 
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(repository, times(1)).save(any(User.class));
         verify(emailService, times(1)).sendSimpleEmail(eq("test@mail.ru"),anyString(),anyString());
+        verify(auditLogRepository, times(1)).save(any());
     }
+
 }
-
-
-
-
-
-//
-//@ExtendWith(MockitoExtension.class)
-//class UserServiceTest {
-//    @Mock
-//    private UserRepository repository;
-//    @Mock
-//    private EmailService emailService;
-//    @Mock
-//    private BCryptPasswordEncoder passwordEncoder;
-//
-//    @InjectMocks
-//    private UserService service;
-//
-//    @Test
-//    void register_ShouldSaveUser() {
-//        User user = new User();
-//        user.setEmail("test@mail.ru");
-//        user.setPassword("password");
-//
-//        when((passwordEncoder.encode(anyString()))).thenReturn("hashedPassword");
-//        service.register(user);
-//
-//        verify(repository, times(1)).save(any(User.class));
-//        verify(emailService, times(1)).sendSimpleEmail(eq("test@mail.ru"),anyString(),anyString());
-//    }
-//
-//
-//}
