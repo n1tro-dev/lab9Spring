@@ -1,6 +1,7 @@
 package org.example.springlab.lab9javaspring.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -16,6 +18,9 @@ public class EmailService {
 
     @Async
     public void sendSimpleEmail(String toAddress, String subject, String message) {
+
+        log.debug("Асинхронная попытка отправки письма на адрес: {}", toAddress);
+
         try {
 //            StopWatch timer = new StopWatch();
 //            timer.start();
@@ -28,14 +33,14 @@ public class EmailService {
             mailMessage.setFrom("noreply@myapp.com");
 
             javaMailSender.send(mailMessage);
-            System.out.println("Email sent successfully to " + toAddress);
+            log.info("Email успешно отправлен пользователю: {}", toAddress);
 
 //            long end = System.currentTimeMillis();
 //            System.out.println("Время работы метода: " + (end - start) + "мс");
 //            timer.stop();
 //            System.out.println(timer.prettyPrint());
         } catch (Exception e){
-            System.out.println("Failed to send email: " + e.getMessage());
+            log.error("Ошибка при отправке письма на {}. Причина: {}", toAddress, e.getMessage());
         }
     }
 }
